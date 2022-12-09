@@ -4,16 +4,41 @@
                 android:background="@drawable/background"
                 xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView android:id="@+id/textView1"
+    <TextView android:id="@+id/title"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="Wall.E !"
-              android:textSize="30sp"
+              android:textSize="45sp"
               android:textColor="#FFFFFF"
               android:layout_gravity="center" tools:ignore="HardcodedText" app:fontFamily="sans-serif-black"
               android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="40dp"
-              style="@style/Widget.Material3.Snackbar.TextView"
-    />
+              android:layout_centerHorizontal="true"
+              android:layout_marginTop="50dp"
+              style="@style/Widget.Material3.Snackbar.TextView" />
+
+    <TextView android:id="@+id/countdown"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="00:00"
+              android:textSize="40sp"
+              android:textColor="#FFFFFF"
+              android:layout_gravity="center" tools:ignore="HardcodedText" app:fontFamily="sans-serif-black"
+              android:layout_below="@+id/title"
+              android:layout_centerHorizontal="true"
+              android:layout_marginTop="50dp"
+              style="@style/Widget.Material3.Snackbar.TextView" />
+
+    <Button android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"
+            android:layout_below="@+id/countdown"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="29dp"
+            android:background="@drawable/button"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp" tools:ignore="HardcodedText"/>
 </RelativeLayout>
