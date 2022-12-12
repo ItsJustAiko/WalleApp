@@ -40,5 +40,6 @@
             android:textSize="26sp"
             android:padding="10dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginStart="20dp" tools:ignore="HardcodedText"/>
+            android:onClick="startTimer"
+            android:layout_marginStart="20dp" tools:ignore="HardcodedText,UsingOnClickInXml"/>
 </RelativeLayout>
