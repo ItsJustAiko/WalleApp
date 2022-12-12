@@ -28,18 +28,59 @@
               android:layout_marginTop="50dp"
               style="@style/Widget.Material3.Snackbar.TextView" />
 
-    <Button android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            android:layout_below="@+id/countdown"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="29dp"
-            android:background="@drawable/button"
-            android:textColor="#FFFFFF"
-            android:textSize="26sp"
-            android:padding="10dp"
-            android:layout_marginBottom="20dp"
-            android:onClick="startTimer"
-            android:layout_marginStart="20dp" tools:ignore="HardcodedText,UsingOnClickInXml"/>
+    <TextView android:id="@+id/statusText"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Status: Not Connected"
+              android:textSize="26sp"
+              app:fontFamily="sans-serif-black"
+              android:textColor="#FFFFFF"
+              android:layout_gravity="center" tools:ignore="HardcodedText"
+              android:layout_below="@+id/countdown"
+              android:layout_centerHorizontal="true"
+              android:layout_marginTop="30dp"
+              android:layout_alignParentLeft="true"
+              style="@style/Widget.Material3.Snackbar.TextView" />
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="140dp"
+                  android:orientation="horizontal"
+                  android:layout_below="@+id/statusText"
+                  android:gravity="center"
+                  tools:context=".MainActivity">
+
+        <Button android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/statusText"
+                android:layout_marginTop="29dp"
+                android:background="@drawable/button"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="startTimer"
+                 tools:ignore="HardcodedText,UsingOnClickInXml"/>
+
+        <Button android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect"
+                android:layout_below="@+id/statusText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="29dp"
+                android:background="@drawable/button"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="connectBluetooth"
+                tools:ignore="HardcodedText,UsingOnClickInXml"/>
+    </LinearLayout>
 </RelativeLayout>
