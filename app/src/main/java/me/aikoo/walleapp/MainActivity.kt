@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.View
 import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    fun connectBluetooth(view: View) {
+    fun connectBluetooth() {
         val status = findViewById<TextView>(R.id.statusText)
 
         val btManager: BluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
@@ -40,24 +39,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (device == null) {
-            status.text = "Status: Failed to connect to Wall.E! b"
+            status.text = "Status: Failed to connect to Wall.E! No such device"
             return
         }
 
         status.text = "Status: Connecting to Wall.E..."
-        val socket: BluetoothSocket? =
-            device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+        val socket: BluetoothSocket? = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
         socket?.connect()
         if (socket?.isConnected == true) {
             status.text = "Status: Connected to Wall.E!"
         } else {
-            status.text = "Status: Failed to connect to Wall.E! a "
+            status.text = "Status: Failed to connect to Wall.E! Is it turned on?"
         }
     }
 
 
     @SuppressLint("SetTextI18n")
-    fun startTimer(view: View) {
+    fun startTimer() {
         val countdownTextView by lazy { findViewById<TextView>(R.id.countdown) }
         val buttonView by lazy { findViewById<TextView>(R.id.button1) }
 
@@ -82,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }, 0, 1)
             }
-
             "Stop" -> {
                 buttonView.text = "Start"
                 timer.cancel()
