@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var timer: Timer;
+    private lateinit var timer: Timer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -31,73 +31,65 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     fun connectBluetooth(view: View) {
         val status = findViewById<TextView>(R.id.statusText)
-        status.text = "Status: Connecting to Wall.E..."
 
         val btManager: BluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         val btAdapter: BluetoothAdapter? = btManager.adapter
         val deviceAddress = "98:D3:51:FE:45:1A"
         val device: BluetoothDevice? = btAdapter?.getRemoteDevice(deviceAddress)
-        val permission = packageManager.checkPermission(Manifest.permission.BLUETOOTH, packageName);
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            if (device != null) {
-                val socket: BluetoothSocket? = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
-                socket?.connect()
-                if (socket?.isConnected == true) {
-                    status.text = "Status: Connected to Wall.E!"
-                } else {
-                    status.text = "Status: Failed to connect to Wall.E! a "
-                }
-            } else {
-                status.text = "Status: Failed to connect to Wall.E! b"
-            }
-        } else {
+        val permission = packageManager.checkPermission(Manifest.permission.BLUETOOTH, packageName)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
             status.text = "Status: Failed to connect to Wall.E! Missing permissions!"
+            return
+        }
+
+        if (device == null) {
+            status.text = "Status: Failed to connect to Wall.E! b"
+            return
+        }
+
+        status.text = "Status: Connecting to Wall.E..."
+        val socket: BluetoothSocket? = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+        socket?.connect()
+        if (socket?.isConnected == true) {
+            status.text = "Status: Connected to Wall.E!"
+        } else {
+            status.text = "Status: Failed to connect to Wall.E! a "
         }
     }
 
+
     @SuppressLint("SetTextI18n")
     fun startTimer(view: View) {
-        val countdownTextView = findViewById<TextView>(R.id.countdown)
-        val buttonView = findViewById<TextView>(R.id.button1)
+        val countdownTextView by lazy { findViewById<TextView>(R.id.countdown) }
+        val buttonView by lazy { findViewById<TextView>(R.id.button1) }
 
-        if (buttonView.text == "Start") {
-            buttonView.text = "Stop"
+        when (buttonView.text) {
+            "Start" -> {
+                buttonView.text = "Stop"
 
-            if (countdownTextView.text == "00:00:00") {
+                val time = countdownTextView.text.split(":", ".")
+                var elapsedTime = time[0].toLong() * 60000 + time[1].toLong() * 1000 + time[2].toLong()
+
                 timer = Timer()
                 timer.scheduleAtFixedRate(object : TimerTask() {
-                    var seconds = 0
                     override fun run() {
                         runOnUiThread {
-                            val hours = seconds / 3600
-                            val minutes = (seconds % 3600) / 60
-                            val secs = seconds % 60
-                            val time = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs)
-                            countdownTextView.text = time
-                            seconds++
+                            elapsedTime++
+                            val minutes = elapsedTime / 60000
+                            val seconds = elapsedTime % 60000 / 1000
+                            val milliseconds = elapsedTime % 1000
+
+                            countdownTextView.text = "%02d:%02d.%03d".format(minutes, seconds, milliseconds)
                         }
                     }
-                }, 0, 1000)
-            } else {
-                timer = Timer()
-                timer.scheduleAtFixedRate(object : TimerTask() {
-                    val splitted = countdownTextView.text.split(":")
-                    var seconds = splitted[0].toInt() * 3600 + splitted[1].toInt() * 60 + splitted[2].toInt()
-                    override fun run() {
-                        runOnUiThread {
-                            val hours = seconds / 3600
-                            val minutes = (seconds % 3600) / 60
-                            val secs = seconds % 60
-                            val time = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, secs)
-                            countdownTextView.text = time
-                            seconds++
-                        }
-                    }
-                }, 0, 1000)
+                }, 0, 1)
             }
-        } else {
-            buttonView.text = "Start"
-            timer.cancel()
+            "Stop" -> {
+                buttonView.text = "Start"
+                timer.cancel()
+                timer.purge()
+            }
         }
     }
 }
