@@ -7,16 +7,12 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.pm.PackageManager
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.Window
-import android.view.WindowManager
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import java.util.*
-import kotlin.concurrent.scheduleAtFixedRate
 
 class MainActivity : AppCompatActivity() {
     private lateinit var timer: Timer
@@ -49,7 +45,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         status.text = "Status: Connecting to Wall.E..."
-        val socket: BluetoothSocket? = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+        val socket: BluetoothSocket? =
+            device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
         socket?.connect()
         if (socket?.isConnected == true) {
             status.text = "Status: Connected to Wall.E!"
@@ -85,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }, 0, 1)
             }
+
             "Stop" -> {
                 buttonView.text = "Start"
                 timer.cancel()
