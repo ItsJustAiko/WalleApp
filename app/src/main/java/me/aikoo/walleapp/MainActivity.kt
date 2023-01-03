@@ -15,6 +15,12 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var timer: Timer
+    private val btManager: BluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
+    private val btAdapter: BluetoothAdapter? = btManager.adapter
+    private val deviceAddress = "98:D3:51:FE:45:1A"
+    private val device: BluetoothDevice? = btAdapter?.getRemoteDevice(deviceAddress)
+    private var socket: BluetoothSocket? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -27,10 +33,6 @@ class MainActivity : AppCompatActivity() {
     fun connectBluetooth() {
         val status = findViewById<TextView>(R.id.statusText)
 
-        val btManager: BluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
-        val btAdapter: BluetoothAdapter? = btManager.adapter
-        val deviceAddress = "98:D3:51:FE:45:1A"
-        val device: BluetoothDevice? = btAdapter?.getRemoteDevice(deviceAddress)
         val permission = packageManager.checkPermission(Manifest.permission.BLUETOOTH, packageName)
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         status.text = "Status: Connecting to Wall.E..."
-        val socket: BluetoothSocket? = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+        socket = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
         socket?.connect()
         if (socket?.isConnected == true) {
             status.text = "Status: Connected to Wall.E!"
@@ -62,6 +64,17 @@ class MainActivity : AppCompatActivity() {
         when (buttonView.text) {
             "Start" -> {
                 buttonView.text = "Stop"
+
+                if (socket?.isConnected == true) {
+                    try {
+                        val outputStream = socket?.outputStream
+                        outputStream?.write(1)
+                        outputStream?.flush()
+                    } catch (e: Exception) {
+                        val status = findViewById<TextView>(R.id.statusText)
+                        countdownTextView.text = "Error: ${e.message}"
+                    }
+                }
 
                 val time = countdownTextView.text.split(":", ".")
                 var elapsedTime = time[0].toLong() * 60000 + time[1].toLong() * 1000 + time[2].toLong()
@@ -81,6 +94,17 @@ class MainActivity : AppCompatActivity() {
                 }, 0, 1)
             }
             "Stop" -> {
+                if (socket?.isConnected == true) {
+                    try {
+                        val outputStream = socket?.outputStream
+                        outputStream?.write(0)
+                        outputStream?.flush()
+                    } catch (e: Exception) {
+                        val status = findViewById<TextView>(R.id.statusText)
+                        countdownTextView.text = "Error: ${e.message}"
+                    }
+                }
+
                 buttonView.text = "Start"
                 timer.cancel()
                 timer.purge()
